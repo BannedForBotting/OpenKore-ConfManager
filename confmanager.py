@@ -22,7 +22,7 @@ scrollbar = tkinter.Scrollbar(master)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 listbox = tkinter.Listbox(master, yscrollcommand=scrollbar.set)
 scrollbar.config(command=listbox.yview)
-listbox.config(width=50, height=29)
+listbox.config(width=50, height=29, exportselection=False)
 listbox.pack()
 
 CONF_MANAGER_REPO = './confManager\\'
@@ -41,11 +41,13 @@ def close(event):
 
 def copy_file(event=None):
     chosen_index = listbox.curselection()
-    print(chosen_index)
+    if len(chosen_index) <= 0:
+        text_info.set("No file selected")
+        logging.error("No file selected")
+        return
     chosen_file = files[chosen_index[0]]
-    print(chosen_file)
     if chosen_file is None or len(chosen_file) <= 0:
-        text_info.set("Configuration loaded!")
+        text_info.set("Wrong file name")
         logging.error("Wrong file name")
         return
     shutil.copy2(OPENKORE_CONF_FILE, CONF_MANAGER_OLD)
@@ -71,7 +73,6 @@ def list_files():
 
 
 def conf_manager():
-    global listbox
     global files
     files = list_files()
     if len(files) <= 0:
@@ -80,6 +81,8 @@ def conf_manager():
         sys.exit("No .txt configuration file found in ./confManager/")
     for j in files:
         listbox.insert(tkinter.END, j)
+    listbox.select_set(0)
+    listbox.event_generate("<<ListboxSelect>>")
 
 
 if __name__ == '__main__':
@@ -87,7 +90,7 @@ if __name__ == '__main__':
         master.bind('<Escape>', close)
         btn = tkinter.Button(master, text='Load!', command=copy_file)
         btn.pack()
-        text_info.set("Welcome to OpenKore Conf Manager!")
+        text_info.set("Welcome to OpenKore Conf Manager! Please select a file...")
         print("Welcome to OpenKore Conf Manager!")
         conf_manager()
         master.bind('<Return>', copy_file)
