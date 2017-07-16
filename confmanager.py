@@ -8,29 +8,32 @@ import tkinter
 import time
 
 
-master = tkinter.Tk()
-master.title("OpenKore Configuration Manager")
-master.geometry('500x530')
-
-text_frame = tkinter.Frame(master, bd=1, height=20)
-text_frame.pack(side="bottom", fill="x")
-text_info = tkinter.StringVar()
-text_label = tkinter.Label(text_frame, textvariable=text_info)
-text_label.pack()
-
-scrollbar = tkinter.Scrollbar(master)
-scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-listbox = tkinter.Listbox(master, yscrollcommand=scrollbar.set)
-scrollbar.config(command=listbox.yview)
-listbox.config(width=50, height=29, exportselection=False)
-listbox.pack()
-
 CONF_MANAGER_REPO = './confManager\\'
 CONF_MANAGER_OLD = './confManager/old.txt'
 CONF_MANAGER_FILE_PATTERN = './confManager/*.txt'
 OPENKORE_CONF_FILE = './control/config.txt'
 
 files = []
+
+master = tkinter.Tk()
+master.title("OpenKore Configuration Manager")
+master.geometry('500x530')
+master.resizable(width=False, height=False)
+
+text_frame = tkinter.Frame(master, bd=1, height=20)
+text_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+text_info = tkinter.StringVar()
+text_label = tkinter.Label(text_frame, textvariable=text_info)
+text_label.pack()
+
+list_frame = tkinter.Frame(master, bd=1)
+list_frame.pack(side=tkinter.TOP, fill=tkinter.BOTH)
+scrollbar = tkinter.Scrollbar(list_frame, orient=tkinter.VERTICAL)
+listbox = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+scrollbar.config(command=listbox.yview)
+listbox.config(width=50, height=29)
+scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+listbox.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
 
 
 def close(event):
@@ -81,14 +84,14 @@ def conf_manager():
         sys.exit("No .txt configuration file found in ./confManager/")
     for j in files:
         listbox.insert(tkinter.END, j)
-    listbox.select_set(0)
-    listbox.event_generate("<<ListboxSelect>>")
 
 
 if __name__ == '__main__':
     try:
         master.bind('<Escape>', close)
-        btn = tkinter.Button(master, text='Load!', command=copy_file)
+        button_frame = tkinter.Frame(master, bd=1)
+        button_frame.pack(side=tkinter.BOTTOM, fill=tkinter.BOTH)
+        btn = tkinter.Button(button_frame, text='Load!', command=copy_file, height=60, width=60)
         btn.pack()
         text_info.set("Welcome to OpenKore Conf Manager! Please select a file...")
         print("Welcome to OpenKore Conf Manager!")
