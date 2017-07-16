@@ -5,13 +5,23 @@ import sys
 import glob
 import shutil
 import tkinter
+import time
 
 
 master = tkinter.Tk()
 master.title("OpenKore Configuration Manager")
-master.geometry('500x500')
+master.geometry('500x530')
 
-listbox = tkinter.Listbox(master)
+text_frame = tkinter.Frame(master, bd=1, height=20)
+text_frame.pack(side="bottom", fill="x")
+text_info = tkinter.StringVar()
+text_label = tkinter.Label(text_frame, textvariable=text_info)
+text_label.pack()
+
+scrollbar = tkinter.Scrollbar(master)
+scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+listbox = tkinter.Listbox(master, yscrollcommand=scrollbar.set)
+scrollbar.config(command=listbox.yview)
 listbox.config(width=50, height=29)
 listbox.pack()
 
@@ -29,16 +39,18 @@ def close(event):
     sys.exit(1)
 
 
-def copy_file():
+def copy_file(event=None):
     chosen_index = listbox.curselection()
     print(chosen_index)
     chosen_file = files[chosen_index[0]]
     print(chosen_file)
     if chosen_file is None or len(chosen_file) <= 0:
-        print("Wrong file name")
+        text_info.set("Configuration loaded!")
+        logging.error("Wrong file name")
         return
     shutil.copy2(OPENKORE_CONF_FILE, CONF_MANAGER_OLD)
     shutil.copy2(CONF_MANAGER_REPO + chosen_file, OPENKORE_CONF_FILE)
+    text_info.set("Configuration loaded!")
     print("Configuration loaded!")
 
 
@@ -49,6 +61,8 @@ def list_files():
     for i in files_list:
         tmp = i.split(CONF_MANAGER_REPO)
         if len(tmp) <= 0:
+            text_info.set("Wrong file repository")
+            time.sleep(5)
             sys.exit("Wrong file repository")
         tmp = tmp[1]
         res_list.append(tmp)
@@ -61,21 +75,11 @@ def conf_manager():
     global files
     files = list_files()
     if len(files) <= 0:
+        text_info.set("No .txt configuration file found in ./confManager/")
+        time.sleep(5)
         sys.exit("No .txt configuration file found in ./confManager/")
     for j in files:
         listbox.insert(tkinter.END, j)
-        # chosen_file = input("Which file do you wish to load? :")
-        # if chosen_file is None or len(chosen_file) <= 0:
-        #     print("Wrong file name")
-        #     return
-        # if chosen_file[-4:] != '.txt':
-        #     print("PD")
-        #     chosen_file += ".txt"
-        # for i in files:
-        #     if chosen_file == i:
-        #         copy_file(chosen_file)
-        #         sys.exit("Configuration file loaded!")
-        # print("Configuration file not found! Try again...")
 
 
 if __name__ == '__main__':
@@ -83,8 +87,10 @@ if __name__ == '__main__':
         master.bind('<Escape>', close)
         btn = tkinter.Button(master, text='Load!', command=copy_file)
         btn.pack()
+        text_info.set("Welcome to OpenKore Conf Manager!")
         print("Welcome to OpenKore Conf Manager!")
         conf_manager()
+        master.bind('<Return>', copy_file)
         master.mainloop()
     except Exception as e:
         logging.error(e)
