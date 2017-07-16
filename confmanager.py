@@ -43,20 +43,19 @@ def close(event):
 
 
 def copy_file(event=None):
-    chosen_index = listbox.curselection()
-    if len(chosen_index) <= 0:
+    if listbox.size() <= 0:
         text_info.set("No file selected")
         logging.error("No file selected")
         return
-    chosen_file = files[chosen_index[0]]
+    chosen_file = listbox.get(tkinter.ACTIVE)
     if chosen_file is None or len(chosen_file) <= 0:
         text_info.set("Wrong file name")
         logging.error("Wrong file name")
         return
     shutil.copy2(OPENKORE_CONF_FILE, CONF_MANAGER_OLD)
     shutil.copy2(CONF_MANAGER_REPO + chosen_file, OPENKORE_CONF_FILE)
-    text_info.set("Configuration loaded!")
-    print("Configuration loaded!")
+    text_info.set("Configuration \"" + chosen_file + "\" loaded!")
+    print("Configuration \"" + chosen_file + "\" loaded!")
 
 
 def list_files():
@@ -84,6 +83,8 @@ def conf_manager():
         sys.exit("No .txt configuration file found in ./confManager/")
     for j in files:
         listbox.insert(tkinter.END, j)
+    listbox.select_set(0)
+    listbox.activate(0)
 
 
 if __name__ == '__main__':
