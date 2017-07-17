@@ -2,7 +2,7 @@
 """A simple GUI that allows OpenKore users to easily switch between configuration.
 
 confManager allow any Ragnarok Online OpenKore user to quickly load a 'config.txt' in order to switch OpenKore's
- configuration and automation pattern.
+configuration and automation pattern.
 """
 
 import logging
@@ -64,7 +64,7 @@ def close(event):
 
 def copy_file(event=None):
     """Copies the selected file from '.\confManager\' to '.\control\config.txt'. Also performs a smart backup in
-     '.\confManager\old.txt.
+    '.\confManager\old.txt.
 
     :param event: Tkinter event.
     :return:
