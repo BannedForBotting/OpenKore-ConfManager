@@ -104,3 +104,4 @@ ENV/
 # Project specific
 control/
 confManager/
+setup.py
