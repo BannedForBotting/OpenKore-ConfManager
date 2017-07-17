@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""A simple GUI that allows OpenKore users to easily switch between configuration.
+
+confManager allow any Ragnarok Online OpenKore user to quickly load a 'config.txt' in order to switch OpenKore's
+ configuration and automation pattern.
+"""
 
 import logging
 import sys
@@ -7,11 +12,21 @@ import shutil
 import tkinter
 import time
 
+__author__ = "Anis BENNABI"
+__copyright__ = "Copyright 2017, Pikipoo"
+__credits__ = ["Anis BENNABI", "Benjamin FOURCAULT"]
 
-CONF_MANAGER_REPO = './confManager\\'
-CONF_MANAGER_OLD = './confManager/old.txt'
-CONF_MANAGER_FILE_PATTERN = './confManager/*.txt'
-OPENKORE_CONF_FILE = './control/config.txt'
+__license__ = "MIT"
+__version__ = "1.0.2"
+__maintainer__ = "Anis BENNABI"
+__email__ = "anis.bennabi@epitech.eu"
+__status__ = "Production"
+
+
+CONF_MANAGER_REPO = '.\\confManager\\'
+CONF_MANAGER_OLD = '.\\confManager\\old.txt'
+CONF_MANAGER_FILE_PATTERN = '.\\confManager\\*.txt'
+OPENKORE_CONF_FILE = '.\\control\\config.txt'
 
 files = []
 
@@ -37,12 +52,23 @@ listbox.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
 
 
 def close(event):
+    """Handles the closing event when <Escape> button is pressed.
+
+    :param event: Tkinter event.
+    :return:
+    """
     master.withdraw()
     print("Goodbye")
     sys.exit(1)
 
 
 def copy_file(event=None):
+    """Copies the selected file from '.\confManager\' to '.\control\config.txt'. Also performs a smart backup in
+     '.\confManager\old.txt.
+
+    :param event: Tkinter event.
+    :return:
+    """
     if listbox.size() <= 0:
         text_info.set("No file selected")
         logging.error("No file selected")
@@ -59,6 +85,10 @@ def copy_file(event=None):
 
 
 def list_files():
+    """Lists all '.txt' files found in '.\confManager' and returns it.
+
+    :return: res_list: List of all configuration files found.
+    """
     res_list = []
     files_list = glob.glob(CONF_MANAGER_FILE_PATTERN)
     print("Saved configuration files:")
@@ -75,6 +105,10 @@ def list_files():
 
 
 def conf_manager():
+    """Inserts all configuration files found in '.\confManager' into a graphical Tkinter.Listbox.
+
+    :return:
+    """
     global files
     files = list_files()
     if len(files) <= 0:
